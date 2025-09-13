@@ -1,0 +1,13 @@
+pyMuPDF
+langchain
+langchain-commmunity
+langchain-huggingface
+langchain-groq
+dotenv              
+faiss-cpu           
+fastapi      
+groq
+huggingface-hub 
+pydantic
+requests
+streamlit
