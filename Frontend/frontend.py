@@ -6,6 +6,7 @@ import os
 st.set_page_config(page_title='RAG application')
 st.title("📘 Motors Co. Chatbot")
 
+#Two different endpoints
 API_URL1="http://127.0.0.1:8000/set_key"
 API_URL2="http://127.0.0.1:8000/chat"
 
