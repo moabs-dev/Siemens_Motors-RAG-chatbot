@@ -83,7 +83,7 @@ def ask_question(req: QuesReceive):
 
 # 2) API key setter endpoint
 class KeyReceive(BaseModel):
-    api_key: str
+    api_key: str   #key will be str
 
 @app.post('/set_key')
 def set_key(req: KeyReceive):
