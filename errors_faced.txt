@@ -1,0 +1,50 @@
+🧩 What’s really happening
+
+1) FastAPI runs in a single Python process (unless you explicitly restart or spawn workers).
+
+--That process loads .env once at startup.
+
+--The variables inside .env are copied into os.environ.
+
+2) When you create ChatGroq(...) inside your get_chain():
+
+--It looks up os.environ["GROQ_API_KEY"] at that moment.
+
+--If the wrong key is in memory, the Groq client fails with 401 → your chain is effectively broken.
+
+3) Changing the .env file later (after startup):
+
+--Does not automatically refresh os.environ for the running process.
+
+--Unless you explicitly call load_dotenv(override=True) and rebuild the ChatGroq object with the new key, FastAPI will keep using the stale key it already had.
+
+Different angle :
+
+1) When you gave a wrong API key
+
+--ChatGroq tried to make a request.
+
+--Groq’s SDK threw an exception (AuthenticationError or APIConnectionError).
+
+--Since there was no try/except in your /chat endpoint, the error bubbled up → FastAPI auto-converted it to a 500 Internal Server Error.
+
+--At this point, your FastAPI server was still running (unless the exception wasn’t handled in the worker). But Streamlit only saw “500 Internal Server Error.”
+
+2) When you then gave a correct key (via /set_key)
+
+--You updated .env and os.environ. ✅
+
+--BUT: the qa_chain (and the llm inside it) was already instantiated earlier with the old key.
+
+--LangChain doesn’t magically reload that chain just because os.environ changed.
+
+--So when you hit /chat again, it was still trying to talk to Groq using the old bad key.
+
+3) Result → still error, even though you gave the right key.
+
+--Why Swagger seemed fine
+
+--Swagger calls were fresh when you restarted FastAPI, meaning qa_chain was re-built with the latest key at app startup.
+
+--That’s why Swagger worked while Streamlit (which was running continuously) kept hitting the stale chain.
+

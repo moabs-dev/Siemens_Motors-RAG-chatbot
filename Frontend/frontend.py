@@ -24,12 +24,13 @@ with st.sidebar:
         #API_KEY = st.text_area('Enter API key :', height= 69 , placeholder='Ch4I82jw9bt70ri')
         user_api_key = st.text_input('Enter API key :', placeholder='Ch4I82jw9bt70ri')
 
-    if user_api_key:
-        api_stat=requests.post(API_URL1,json={"api_key" : user_api_key})
-        if api_stat.status_code == 200:
-            st.success(api_stat.json()["api_status"])
-    elif user_api_key != "" :
-        st.warning("❌ Please enter your API key ")
+    if st.button("Save API Key"):
+        if user_api_key:
+            api_stat=requests.post(API_URL1,json={"api_key" : user_api_key})
+            if api_stat.status_code == 200:
+                st.success(api_stat.json()["api_status"])
+        elif user_api_key != "" :
+            st.warning("❌ Please enter your API key ")
 
     # if st.button("Save API Key"): # We directly using text_input instead of text_area where w just click enter and text inside text_input is sent 
     #     if API_KEY:
@@ -42,28 +43,29 @@ with st.sidebar:
     
 
 
-if query:
-    if src: 
-        response = requests.post(API_URL2, json={"question": query,"source" : src})
-        if response.status_code == 200:
-            st.subheader("Answer")
-            st.write(response.json()["answer"])
-            with st.expander("📌 Sources Info"):
-                sorc=response.json()["sources"]
-                for src in sorc:
-                    st.write(f'Source: {src["source"]}, Page: {src["page"]}')
-                #st.write(f"Source: {sorc}, Page: {pg}")
-
+if st.button("Ask Agent"):
+    if query:
+        if src: 
+            response = requests.post(API_URL2, json={"question": query,"source" : src})
+            if response.status_code == 200:
+                st.subheader("Answer")
+                st.write(response.json()["answer"])
+                with st.expander("📌 Sources Info"):
+                    sorc=response.json()["sources"]
+                    for src in sorc:
+                        st.write(f'Source: {src["source"]}, Page: {src["page"]}')
+                    #st.write(f"Source: {sorc}, Page: {pg}")
+    
+            else:
+                st.error("Error from backend!")
         else:
-            st.error("Error from backend!")
-    else:
-        response = requests.post(API_URL2, json={"question": query,"source" : src})
-        if response.status_code == 200:
-            st.subheader("Answer")
-            st.write(response.json()["answer"])
-        else:
-            st.error("Error from backend!")
-
+            response = requests.post(API_URL2, json={"question": query,"source" : src})
+            if response.status_code == 200:
+                st.subheader("Answer")
+                st.write(response.json()["answer"])
+            else:
+                st.error("Error from backend!")
+    
 
 #now, this :
 # sorc=response.json()["sources"]

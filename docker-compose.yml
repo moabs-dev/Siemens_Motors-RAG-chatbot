@@ -1,0 +1,109 @@
+# # # version: "3.9"
+
+# # # services:
+# # #   backend:
+# # #     build:
+# # #       context: ./Backend
+# # #       dockerfile: Dockerfile.backend
+# # #     ports:
+# # #       - "8000:8000"
+# # #     env_file:
+# # #       - .env   # load your GROQ API key here
+    
+
+# # #   frontend:
+# # #     build:
+# # #       context: ./Frontend
+# # #       dockerfile: Dockerfile.frontend
+# # #     ports:
+# # #       - "8501:8501"
+# # #     depends_on:
+# # #       - backend
+
+# # services:
+# #   backend:
+# #     build:
+# #       context: .
+# #       dockerfile: Backend/Dockerfile.backend
+# #     ports:
+# #       - "8000:8000"
+# #     env_file:
+# #       - .env  
+
+# #   frontend:
+# #   build:
+# #     context: ./Frontend
+# #     dockerfile: Dockerfile.frontend
+# #   working_dir: /app
+# #   command: streamlit run frontend2.py --server.port=8501 --server.address=0.0.0.0
+# #   ports:
+# #     - "8501:8501"
+# #   env_file:
+# #     - .env
+# #   volumes:
+# #     - ./Frontend:/app
+
+
+# services:
+#   backend:
+#     build:
+#       context: ./Backend
+#       dockerfile: Dockerfile.backend
+#     env_file:
+#       - .env
+#     ports:
+#       - "8000:8000"
+
+#   frontend:
+#     build:
+#       context: ./Frontend
+#       dockerfile: Dockerfile.frontend
+#     env_file:
+#       - .env
+#     ports:
+#       - "8501:8501"
+#     depends_on:
+#       - backend
+
+# services:
+#   backend:
+#     build:
+#       context: ./Backend
+#       dockerfile: Dockerfile
+#     volumes:
+#       - ./faiss_index:/app/faiss_index
+#     ports:
+#       - "8000:8000"
+
+
+#   frontend:
+#     build:
+#       context: ./Frontend
+#       dockerfile: Dockerfile
+#     ports:
+#       - "8501:8501"
+#     depends_on:
+#       - backend
+
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./faiss_index:/app/faiss_index
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env 
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend

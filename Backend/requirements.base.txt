@@ -1,13 +1,11 @@
 pyMuPDF
 langchain
-langchain-commmunity
+langchain-community
 langchain-huggingface
 langchain-groq
-dotenv              
-faiss-cpu           
+dotenv                        
 fastapi      
 groq
 huggingface-hub 
 pydantic
-requests
-streamlit
+uvicorn[standard]

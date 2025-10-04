@@ -2,7 +2,7 @@
 #
 import os
 from dotenv import load_dotenv #pip install dotenv langchain langchain_community langchain_huggingface langchain_groq sentence-transformers faiss-cpu
-from langchain_community.embeddings import SentenceTransformerEmbeddings
+#from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_community.chat_models import ChatOllama
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -63,6 +63,18 @@ qa_chain = ConversationalRetrievalChain.from_llm( #This used bcz it includes mor
     #output_key="result",
     chain_type="stuff"
 )
+
+def get_chain():
+    llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
+    chain=ConversationalRetrievalChain.from_llm(
+        llm,
+        retriever=retriever,
+        memory=memory,
+        return_source_documents=True,
+        chain_type="stuff"
+    )
+    return chain
+
 # print(qa_chain.input_keys)  # These tells us that how would be parse input as well as output properly 
 # print(qa_chain.output_keys)
 ######################## You could try "map_reduce" or "refine" if the chunks are big or if answers require more reasoning in chain parameters.
